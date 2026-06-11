@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'config/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,12 +16,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'MiHuella',
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-        body: Center(child: Text('MiHuella')),
-      ),
+      routerConfig: appRouter,
     );
   }
 }
