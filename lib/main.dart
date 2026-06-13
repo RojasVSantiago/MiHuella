@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'config/router.dart';
+import 'providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,15 +13,22 @@ void main() async {
   runApp(const MyApp());
 }
 
+/// Widget raíz de la aplicación.
+/// Registra los providers globales y configura el router.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'MiHuella',
-      debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: MaterialApp.router(
+        title: 'MiHuella',
+        debugShowCheckedModeBanner: false,
+        routerConfig: appRouter,
+      ),
     );
   }
 }
