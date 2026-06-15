@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'config/router.dart';
 import 'providers/auth_provider.dart';
+import 'providers/habit_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +14,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-/// Widget raíz de la aplicación.
-/// Registra los providers globales y configura el router.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -23,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => HabitProvider()),
       ],
       child: Builder(
         builder: (context) => MaterialApp.router(
