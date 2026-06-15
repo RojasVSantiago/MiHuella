@@ -17,22 +17,15 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _auth.currentUser != null;
 
   /// Inicia sesión con Google y Firebase Auth.
-  /// Retorna true si el login fue exitoso, false si el usuario canceló.
-  Future<bool> signInWithGoogle() async {
+/// Retorna true si el login fue exitoso, false si el usuario canceló.
+Future<bool> signInWithGoogle() async {
     try {
-      debugPrint('>>> Iniciando Google Sign In');
       await _googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      debugPrint('>>> googleUser: $googleUser');
-
-      if (googleUser == null) {
-        debugPrint('>>> Usuario canceló');
-        return false;
-      }
+      if (googleUser == null) return false;
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      debugPrint('>>> idToken: ${googleAuth.idToken != null}');
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -40,11 +33,9 @@ class AuthProvider extends ChangeNotifier {
       );
 
       final result = await _auth.signInWithCredential(credential);
-      debugPrint('>>> Firebase user: ${result.user?.email}');
       notifyListeners();
       return true;
     } catch (e) {
-      debugPrint('>>> ERROR: $e');
       return false;
     }
   }

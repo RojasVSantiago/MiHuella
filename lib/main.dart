@@ -24,10 +24,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MaterialApp.router(
-        title: 'MiHuella',
-        debugShowCheckedModeBanner: false,
-        routerConfig: appRouter,
+      child: Builder(
+        builder: (context) => MaterialApp.router(
+          title: 'MiHuella',
+          debugShowCheckedModeBanner: false,
+          routerConfig: appRouter(context),
+        ),
       ),
     );
   }
