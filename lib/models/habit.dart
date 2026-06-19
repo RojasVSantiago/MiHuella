@@ -56,4 +56,33 @@ class Habit {
       completedDates: completedDates ?? this.completedDates,
     );
   }
+
+  /// Retorna la racha actual del hábito.
+  /// Cuenta los días consecutivos completados hacia atrás desde ayer o hoy.
+  int get currentStreak {
+    final today = DateTime.now();
+    int streak = 0;
+
+    for (int i = 0; i < 365; i++) {
+      final day = today.subtract(Duration(days: i));
+      final key =
+          '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+      if (completedDates.contains(key)) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  /// Retorna los días completados en el mes actual.
+  int get completedThisMonth {
+    final now = DateTime.now();
+    return completedDates.where((date) {
+      final parts = date.split('-');
+      return int.parse(parts[0]) == now.year &&
+          int.parse(parts[1]) == now.month;
+    }).length;
+  }
 }

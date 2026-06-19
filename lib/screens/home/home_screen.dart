@@ -5,6 +5,8 @@ import '../../providers/auth_provider.dart';
 import '../../providers/habit_provider.dart';
 import '../../config/app_colors.dart';
 import '../../config/app_icons.dart';
+import '../habit_detail/habit_detail_screen.dart';
+import '../habit_form/habit_form_screen.dart';
 
 /// Pantalla principal que muestra la lista de hábitos del usuario.
 /// Carga los hábitos desde Firestore al iniciar.
@@ -46,27 +48,30 @@ class _HomeScreenState extends State<HomeScreen> {
       body: habitProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : habitProvider.habits.isEmpty
-              ? _EmptyState()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: habitProvider.habits.length,
-                  itemBuilder: (context, index) {
-                    final habit = habitProvider.habits[index];
-                    final isCompleted =
-                        habit.completedDates.contains(todayKey);
-                    return _HabitCard(
-                      habit: habit,
-                      isCompleted: isCompleted,
-                      todayKey: todayKey,
-                    );
-                  },
-                ),
+          ? _EmptyState()
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: habitProvider.habits.length,
+              itemBuilder: (context, index) {
+                final habit = habitProvider.habits[index];
+                final isCompleted = habit.completedDates.contains(todayKey);
+                return _HabitCard(
+                  habit: habit,
+                  isCompleted: isCompleted,
+                  todayKey: todayKey,
+                );
+              },
+            ),
       floatingActionButton: habitProvider.habits.length < 5
-          ? FloatingActionButton(
-              onPressed: () => context.push('/habit-form'),
-              child: const Icon(Icons.add),
-            )
-          : null,
+    ? FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const HabitFormScreen(),
+          ),
+        ),
+        child: const Icon(Icons.add),
+      )
+    : null,
     );
   }
 }
@@ -79,13 +84,11 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.track_changes,
-              size: 80, color: Colors.grey.shade300),
+          Icon(Icons.track_changes, size: 80, color: Colors.grey.shade300),
           const SizedBox(height: 16),
           Text(
             'No tienes hábitos todavía',
-            style: TextStyle(
-                fontSize: 18, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade500),
           ),
           const SizedBox(height: 8),
           Text(
@@ -125,26 +128,25 @@ class _HabitCard extends StatelessWidget {
         title: Text(habit.name),
         subtitle: Text(
           isCompleted ? '✓ Completado hoy' : 'Pendiente hoy',
-          style: TextStyle(
-            color: isCompleted ? Colors.green : Colors.grey,
-          ),
+          style: TextStyle(color: isCompleted ? Colors.green : Colors.grey),
         ),
         trailing: IconButton(
           icon: Icon(
-            isCompleted
-                ? Icons.check_circle
-                : Icons.check_circle_outline,
+            isCompleted ? Icons.check_circle : Icons.check_circle_outline,
             color: isCompleted ? color : Colors.grey.shade300,
           ),
           onPressed: () {
-            final uid =
-                context.read<AuthProvider>().currentUser!.uid;
-            context
-                .read<HabitProvider>()
-                .toggleCompletion(uid, habit.id, todayKey);
+            final uid = context.read<AuthProvider>().currentUser!.uid;
+            context.read<HabitProvider>().toggleCompletion(
+              uid,
+              habit.id,
+              todayKey,
+            );
           },
         ),
-        onTap: () => context.push('/habit-detail', extra: habit),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => HabitDetailScreen(habit: habit)),
+        ),
       ),
     );
   }

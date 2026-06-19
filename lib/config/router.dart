@@ -5,13 +5,13 @@ import '../providers/auth_provider.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/login/login_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/habit_detail/habit_detail_screen.dart';
-import '../screens/habit_form/habit_form_screen.dart';
 import '../screens/profile/profile_screen.dart';
 
 /// Configuración principal del router de la app.
-/// Define todas las rutas y protege las rutas privadas
+/// Define las rutas raíz y protege las rutas privadas
 /// redirigiendo a login si el usuario no está autenticado.
+/// HabitForm y HabitDetail se navegan con Navigator.push directo
+/// porque reciben un objeto Habit como parámetro.
 GoRouter appRouter(BuildContext context) {
   final auth = Provider.of<AuthProvider>(context, listen: false);
 
@@ -39,14 +39,6 @@ GoRouter appRouter(BuildContext context) {
       GoRoute(
         path: '/home',
         builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/habit-detail',
-        builder: (context, state) => const HabitDetailScreen(),
-      ),
-      GoRoute(
-        path: '/habit-form',
-        builder: (context, state) => const HabitFormScreen(),
       ),
       GoRoute(
         path: '/profile',
