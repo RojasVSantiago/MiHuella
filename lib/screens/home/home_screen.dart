@@ -63,15 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
       floatingActionButton: habitProvider.habits.length < 5
-    ? FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const HabitFormScreen(),
-          ),
-        ),
-        child: const Icon(Icons.add),
-      )
-    : null,
+          ? FloatingActionButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const HabitFormScreen()),
+              ),
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
@@ -113,6 +111,33 @@ class _HabitCard extends StatelessWidget {
     required this.todayKey,
   });
 
+  /// Muestra diálogo de confirmación antes de desmarcar un hábito completado.
+  void _confirmUnmark(BuildContext context, String uid) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Desmarcar hábito'),
+        content: Text('¿Seguro que quieres desmarcar "${habit.name}" de hoy?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context
+                  .read<HabitProvider>()
+                  .toggleCompletion(uid, habit.id, todayKey);
+            },
+            child: const Text('Desmarcar',
+                style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = AppColors.fromHex(habit.color);
@@ -137,11 +162,15 @@ class _HabitCard extends StatelessWidget {
           ),
           onPressed: () {
             final uid = context.read<AuthProvider>().currentUser!.uid;
-            context.read<HabitProvider>().toggleCompletion(
-              uid,
-              habit.id,
-              todayKey,
-            );
+            if (isCompleted) {
+              _confirmUnmark(context, uid);
+            } else {
+              context.read<HabitProvider>().toggleCompletion(
+                uid,
+                habit.id,
+                todayKey,
+              );
+            }
           },
         ),
         onTap: () => Navigator.of(context).push(

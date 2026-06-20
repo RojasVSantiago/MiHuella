@@ -29,6 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       context.go('/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo iniciar sesión. Intenta de nuevo.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
