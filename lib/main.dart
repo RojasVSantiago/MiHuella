@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'config/router.dart';
 import 'providers/auth_provider.dart';
 import 'providers/habit_provider.dart';
+import 'config/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
           title: 'MiHuella',
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter(context),
+          theme: AppTheme.light,
         ),
       ),
     );
